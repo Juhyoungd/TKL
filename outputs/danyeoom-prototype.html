@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>다녀옴 — 현장 미션</title>
+  <meta name="description" content="내가 갈 수 없는 곳, 믿을 수 있는 이웃이 대신 다녀옵니다." />
+  <link rel="stylesheet" href="../app/globals.css" />
+  <style>
+    .preview-note{position:fixed;right:18px;top:18px;z-index:70;background:#fff;border:1px solid #dfe3dc;border-radius:999px;padding:8px 12px;font-size:10px;color:#66706c;box-shadow:0 7px 24px rgba(23,35,32,.1)}
+    .preview-form{padding:24px;display:grid;gap:16px}.preview-form label{display:grid;gap:7px}.preview-form label span{font-size:11px;font-weight:800}.preview-form input,.preview-form select,.preview-form textarea{width:100%;border:1px solid #dfe3dc;background:#f8f7f1;border-radius:11px;padding:12px;outline:0;font-size:13px}.hidden{display:none!important}
+    @media(max-width:760px){.preview-note{display:none}}
+  </style>
+</head>
+<body>
+<main id="top" class="app-shell">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="preview-note">클릭 가능한 제품 초안</div>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-dot"><span class="mark">↗</span></span><span>다녀옴</span></a>
+    <button class="location-button" data-toast="현재 성동구 기준으로 보여드리고 있어요.">서울 성동구 <span>⌄</span></button>
+    <button class="trust-chip" data-scroll="my-trust"><span class="mark">◆</span><strong>86.4</strong></button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="mark">✦</span> 사람과 시간을 잇는 현장 미션</div>
+      <h1>가까운 누군가의<br><span>오늘을 도와주세요.</span></h1>
+      <p>내가 갈 수 없는 곳, 믿을 수 있는 이웃이 대신 다녀옵니다.</p>
+      <div class="hero-actions"><button class="primary-button" data-open="composer">미션 부탁하기 <span>＋</span></button><button class="text-button" data-scroll="missions">내 주변 24개 보기 <span>→</span></button></div>
+    </div>
+    <button class="trust-card" data-scroll="my-trust">
+      <div class="trust-card-top"><span>나의 발자국</span><span class="level-badge">든든한 이웃</span></div>
+      <div class="trust-main">
+        <div class="trust-orbit"><span class="orbit-point orbit-one"></span><span class="orbit-point orbit-two"></span><strong>86.4</strong><small>신뢰도</small></div>
+        <div class="trust-summary"><strong>27번의 약속을 지켰어요</strong><p>다음 단계까지 3.6</p><span>정시 완료 96% · 만족도 4.9</span></div>
+      </div>
+      <div class="progress-track"><span></span></div>
+    </button>
+  </section>
+
+  <section id="missions" class="mission-section">
+    <div class="section-heading"><div><span class="section-kicker">NEARBY MISSIONS</span><h2>지금 갈 수 있는 미션</h2></div><button class="sort-button" data-toast="가까운 순으로 정렬했어요.">가까운 순 <span>↕</span></button></div>
+    <label class="search-box"><span>⌕</span><input id="search" placeholder="장소나 미션을 검색해보세요"><button id="clear-search" aria-label="검색어 지우기">×</button></label>
+    <div class="filters" id="filters"><button class="active">전체</button><button>대신 가기</button><button>현장 확인</button><button>픽업·전달</button></div>
+    <div class="mission-grid" id="mission-grid"></div>
+  </section>
+
+  <section id="my-trust" class="trust-explainer">
+    <div class="section-heading compact"><div><span class="section-kicker">TRUST THAT GROWS</span><h2>약속을 지킬수록 쌓이는 발자국</h2></div></div>
+    <p class="trust-intro">높은 숫자 하나보다, 어떤 약속을 잘 지키는지가 더 중요하니까요.</p>
+    <div class="score-cards">
+      <div><span class="score-icon coral">◷</span><strong>96%</strong><small>정시 완료</small></div><div><span class="score-icon lime">✓</span><strong>4.9</strong><small>결과 만족도</small></div><div><span class="score-icon blue">↺</span><strong>42%</strong><small>다시 찾은 의뢰자</small></div><div><span class="score-icon cream">0건</span><strong>안심</strong><small>최근 분쟁</small></div>
+    </div>
+    <div class="level-path"><span class="level done"><i>1</i><b>첫 발걸음</b></span><span class="level done"><i>2</i><b>익숙한 이웃</b></span><span class="level current"><i>3</i><b>든든한 이웃</b></span><span class="level"><i>4</i><b>동네 해결사</b></span></div>
+  </section>
+
+  <section id="stories" class="stories-section">
+    <div class="stories-copy"><span class="section-kicker light">EXPERIENCE LOUNGE</span><h2>해본 사람의<br>진짜 이야기를 들어보세요.</h2><p>성공담보다 유용한 실패의 순간을 기록하고, 같은 길을 걷는 사람과 나눠요.</p><button data-toast="경험 라운지는 다음 버전에서 더 깊게 열릴 예정이에요.">경험 라운지 둘러보기 <span>→</span></button></div>
+    <article class="story-card"><div class="story-top"><span>실패노트 · 창업</span><span>저장 128</span></div><h3>동네 카페 8개월,<br>매출보다 먼저 봤어야 했던 숫자</h3><p>“처음 세 달의 매출은 나쁘지 않았어요. 하지만 재방문율을 제대로 보지 않았죠.”</p><div class="story-author"><span class="avatar">J</span><span><strong>잔잔한파도</strong><small>경험 인증 완료</small></span><span class="mini-trust">◆ 91.8</span></div></article>
+  </section>
+
+  <footer class="footer"><div class="footer-brand"><span class="brand-dot">↗</span><strong>다녀옴</strong></div><p>누군가의 시간이, 당신의 거리를 줄여요.</p><span>안전한 미션만 연결하기 위해 모든 의뢰를 확인합니다.</span></footer>
+
+  <nav class="bottom-nav"><button class="active" data-scroll="top"><span class="mark">⌂</span><span>홈</span></button><button data-scroll="missions"><span class="mark">◎</span><span>미션</span></button><button data-open="composer"><span class="mark">+</span><span>등록</span></button><button data-scroll="stories"><span class="mark">◒</span><span>경험</span></button><button data-scroll="my-trust"><span class="mark">●</span><span>마이</span></button></nav>
+
+  <div id="detail-modal" class="modal-backdrop hidden">
+    <section class="detail-sheet" role="dialog" aria-modal="true"><div class="sheet-handle"></div><div class="sheet-header"><button data-close="detail">←</button><span>미션 상세</span><button data-toast="관심 미션으로 저장했어요.">♡</button></div><div class="detail-content" id="detail-content"></div><div class="sheet-action"><div><small>받을 수고비</small><strong id="detail-reward"></strong></div><button id="apply-button">이 미션 지원하기</button></div></section>
+  </div>
+
+  <div id="composer-modal" class="modal-backdrop hidden">
+    <section class="composer" role="dialog" aria-modal="true"><div class="sheet-handle"></div><div class="sheet-header"><button data-close="composer">×</button><span>새 미션 부탁하기</span><span></span></div>
+      <form class="preview-form" id="mission-form"><label><span>미션 종류</span><select name="category"><option>현장 확인</option><option>대신 가기</option><option>픽업·전달</option></select></label><label><span>부탁할 일</span><input name="title" required placeholder="예: 팝업스토어 재고를 확인해주세요"></label><div class="form-row"><label><span>장소</span><input name="location" required placeholder="성수동 연무장길"></label><label><span>수고비</span><input name="reward" required type="number" min="1000" step="1000" placeholder="18000"></label></div><label><span>언제까지</span><input name="when" placeholder="오늘 오후 6시까지"></label><label><span>상세 설명</span><textarea name="description" rows="4" placeholder="수행자가 알아야 할 내용을 알려주세요."></textarea></label><div class="composer-tip">◆ <span>결제 전에 금지 미션과 위험 요소를 확인해드려요.</span></div><button class="primary-button submit" type="submit">미션 등록하기</button></form>
+    </section>
+  </div>
+  <div id="toast" class="toast hidden" role="status"></div>
+</main>
+
+<script>
+const missions=[
+ {id:1,category:'현장 확인',title:'성수 팝업 재고와 대기줄 확인해주세요',location:'성수동 연무장길',distance:'1.2km',when:'오늘 오후 3:30까지',reward:18000,duration:'약 25분',applicants:2,urgent:true,description:'매장 앞 대기 인원과 블루 색상 M 사이즈 재고 여부를 확인해 주세요. 구매는 하지 않아도 됩니다.',proof:'매장 간판 사진 · 대기 인원 메모 · 직원 확인 내용',requester:'윤슬',trust:92.4},
+ {id:2,category:'대신 가기',title:'여의도 한정 굿즈 오픈런 줄서기',location:'더현대 서울',distance:'6.8km',when:'내일 오전 8:00',reward:48000,duration:'약 2시간',applicants:5,description:'오픈 2시간 전부터 대기 후 입장 순번을 넘겨주시면 됩니다. 현장 구매 비용은 별도 안전결제합니다.',proof:'도착 체크인 · 대기번호 사진 · 인계 코드',requester:'모카',trust:88.7},
+ {id:3,category:'픽업·전달',title:'수선 완료된 가방 픽업 부탁드려요',location:'강남구 신사동',distance:'8.1km',when:'오늘 오후 7:00 전',reward:22000,duration:'약 40분',applicants:1,description:'수선집에서 가방을 받아 인근 택배 보관함에 넣어주세요. 수령증과 보관함 번호 확인이 필요합니다.',proof:'수령증 · 물품 상태 사진 · 보관함 완료 화면',requester:'한걸음',trust:96.1},
+ {id:4,category:'현장 확인',title:'망원동 촬영 공간 입구와 주차 확인',location:'마포구 망원동',distance:'9.4km',when:'이번 주 금요일',reward:15000,duration:'약 15분',applicants:0,description:'다음 주 촬영 전 건물 입구 폭과 1톤 차량 진입 가능 여부를 확인하려고 합니다.',proof:'입구 정면 사진 · 주변 주차 표지판 사진',requester:'스튜디오 레이어',trust:84.9}
+];
+let activeCategory='전체',selected=null,applied=new Set();
+const won=n=>new Intl.NumberFormat('ko-KR').format(n)+'원';
+function render(){const q=document.querySelector('#search').value.trim().toLowerCase();const list=missions.filter(m=>(activeCategory==='전체'||m.category===activeCategory)&&(!q||(m.title+' '+m.location).toLowerCase().includes(q)));document.querySelector('#mission-grid').innerHTML=list.length?list.map(m=>`<article class="mission-card" data-id="${m.id}"><div class="mission-card-head"><div class="mission-tags">${m.urgent?'<span class="urgent-tag">오늘 마감</span>':''}<span class="category-tag">${m.category}</span></div><span class="distance"><span class="mark">⌖</span> ${m.distance}</span></div><h3>${m.title}</h3><p class="mission-place">${m.location}</p><div class="mission-meta"><span>◷ ${m.when}</span><span>·</span><span>${m.duration}</span></div><div class="mission-footer"><div><strong>${won(m.reward)}</strong><span>수고비</span></div><div class="applicants"><span class="verified">✓ 안전결제</span><span>지원 ${m.applicants+(applied.has(m.id)?1:0)}명</span></div></div>${applied.has(m.id)?'<div class="applied-ribbon">✓ 지원 완료</div>':''}</article>`).join(''):'<div class="empty-state"><strong>조건에 맞는 미션이 없어요.</strong><span>검색어나 카테고리를 바꿔보세요.</span></div>';document.querySelectorAll('.mission-card').forEach(card=>card.onclick=()=>openDetail(Number(card.dataset.id)));}
+function openDetail(id){selected=missions.find(m=>m.id===id);document.querySelector('#detail-content').innerHTML=`<div class="mission-tags"><span class="category-tag">${selected.category}</span>${selected.urgent?'<span class="urgent-tag">오늘 마감</span>':''}</div><h2>${selected.title}</h2><div class="requester-row"><span class="avatar warm">${selected.requester[0]}</span><span><strong>${selected.requester}</strong><small>의뢰자 · 본인 인증</small></span><span class="mini-trust">◆ ${selected.trust}</span></div><div class="detail-facts"><div><span class="mark">⌖</span><span><small>장소</small><strong>${selected.location} · ${selected.distance}</strong></span></div><div><span class="mark">◷</span><span><small>시간</small><strong>${selected.when} · ${selected.duration}</strong></span></div><div><span class="mark">◆</span><span><small>수고비</small><strong>${won(selected.reward)} · 안전결제</strong></span></div></div><div class="detail-block"><h3>어떤 미션인가요?</h3><p>${selected.description}</p></div><div class="detail-block proof-block"><h3>완료 확인</h3><p>✓ ${selected.proof}</p></div><div class="safety-note">◆ <span><strong>다녀옴 안전 약속</strong><small>미션 완료 전까지 결제금은 안전하게 보관돼요.</small></span></div>`;document.querySelector('#detail-reward').textContent=won(selected.reward);const button=document.querySelector('#apply-button');button.textContent=applied.has(id)?'지원했어요':'이 미션 지원하기';button.disabled=applied.has(id);button.className=applied.has(id)?'done':'';document.querySelector('#detail-modal').classList.remove('hidden');}
+function flash(message){const toast=document.querySelector('#toast');toast.innerHTML='✓ '+message;toast.classList.remove('hidden');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.add('hidden'),2500)}
+document.querySelector('#filters').onclick=e=>{if(e.target.tagName!=='BUTTON')return;activeCategory=e.target.textContent;document.querySelectorAll('#filters button').forEach(b=>b.classList.toggle('active',b===e.target));render()};
+document.querySelector('#search').oninput=render;document.querySelector('#clear-search').onclick=()=>{document.querySelector('#search').value='';render()};
+document.querySelectorAll('[data-toast]').forEach(el=>el.onclick=()=>flash(el.dataset.toast));document.querySelectorAll('[data-scroll]').forEach(el=>el.onclick=()=>document.getElementById(el.dataset.scroll).scrollIntoView({behavior:'smooth'}));document.querySelectorAll('[data-open="composer"]').forEach(el=>el.onclick=()=>document.querySelector('#composer-modal').classList.remove('hidden'));
+document.querySelectorAll('[data-close="detail"]').forEach(el=>el.onclick=()=>document.querySelector('#detail-modal').classList.add('hidden'));document.querySelectorAll('[data-close="composer"]').forEach(el=>el.onclick=()=>document.querySelector('#composer-modal').classList.add('hidden'));
+document.querySelector('#apply-button').onclick=()=>{applied.add(selected.id);document.querySelector('#detail-modal').classList.add('hidden');render();flash('지원이 전달됐어요. 의뢰자가 확인하면 알려드릴게요.')};
+document.querySelector('#mission-form').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);missions.unshift({id:Date.now(),category:f.get('category'),title:f.get('title'),location:f.get('location'),distance:'위치 협의',when:f.get('when')||'시간 협의',reward:Number(f.get('reward')),duration:'의뢰자 예상 30분',applicants:0,description:f.get('description')||'상세 내용은 채팅으로 알려드릴게요.',proof:'현장 사진 · 완료 체크',requester:'김코덱스',trust:86.4});activeCategory='전체';document.querySelectorAll('#filters button').forEach((b,i)=>b.classList.toggle('active',i===0));document.querySelector('#composer-modal').classList.add('hidden');e.target.reset();render();document.querySelector('#missions').scrollIntoView({behavior:'smooth'});flash('미션이 등록됐어요. 안전 가이드를 확인 중이에요.')};
+document.querySelectorAll('.modal-backdrop').forEach(modal=>modal.onclick=e=>{if(e.target===modal)modal.classList.add('hidden')});render();
+</script>
+</body>
+</html>

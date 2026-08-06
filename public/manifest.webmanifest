@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "찾구 앱 베타 — 리버스 로컬 마켓",
+  "short_name": "찾구",
+  "description": "제안을 비교하고 거래가 성사되면 1:1 채팅이 열리는 리버스 로컬 마켓 앱",
+  "lang": "ko-KR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f2f8",
+  "theme_color": "#746391",
+  "categories": ["shopping", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/og.png",
+      "sizes": "1792x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
