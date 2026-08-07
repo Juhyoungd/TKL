@@ -61,5 +61,16 @@ html{background:#e9e5ec}.findgoo{width:min(100%,760px);min-height:100svh;margin:
 @media(prefers-reduced-motion:reduce){.mobile-nav button,.mobile-nav button>span,.theme-picker>button{transition:none!important}}
 @media(max-width:380px){.mobile-nav{width:calc(100% - 14px)!important}.mobile-nav button{font-size:7px}.theme-picker>button{flex-basis:86px}}
 
+/* [메인 화면] 여백을 조금 더 여유롭게 */
+.app-overview{padding:40px 24px 36px}
+.welcome-row{gap:24px}
+.welcome-row h1{margin:10px 0 8px}
+.home-search{margin-top:28px}
+.home-actions{gap:14px;margin-top:24px}
+.home-status{margin-top:20px;padding:12px}
+.service-shortcuts{gap:10px;margin-top:16px}
+@media(max-width:760px){.app-overview{padding:32px 20px 30px}.welcome-row{gap:16px}.home-search{margin-top:24px}.home-actions{gap:12px;margin-top:20px}.home-status{margin-top:16px;padding:11px}.service-shortcuts{gap:9px;margin-top:14px}}
+@media(max-width:520px){.app-overview{padding-top:28px}.welcome-row{gap:14px}.home-search{margin-top:22px}.home-actions{gap:10px;margin-top:18px}.home-status{margin-top:14px;padding:10px}.service-shortcuts{gap:7px;margin-top:12px}}
+
 /* [로그인] 독립 인증 화면 */
 .auth-route{width:min(100%,760px);min-height:100svh;margin:auto;padding:24px;display:grid;place-items:center;background:radial-gradient(circle at 82% 12%,color-mix(in srgb,var(--blue) 48%,transparent),transparent 28%),var(--paper)}.auth-route>section{width:min(390px,100%);padding:34px 24px;background:var(--white);border:1px solid var(--line);border-radius:28px;text-align:center;box-shadow:var(--shadow)}.auth-route small{display:block;margin-top:22px;color:var(--lime);font-size:8px;font-weight:900;letter-spacing:1.5px}.auth-route h1{margin:8px 0;font-size:27px;letter-spacing:-1.5px}.auth-route p{margin:0 0 22px;color:var(--muted);font-size:11px;line-height:1.7}.auth-route a{height:48px;border-radius:14px;background:var(--ink);color:white;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:11px;font-weight:900}.auth-route .guest-link{margin-top:8px;background:transparent;color:var(--muted);border:1px solid var(--line)}

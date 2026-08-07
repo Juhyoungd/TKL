@@ -1,13 +1,35 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
+import { extname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
+// FindgooApp.tsx delegates most rendering/logic to src/components/** and src/hooks/**,
+// so feature-presence checks below match against the combined source of that whole tree
+// rather than assuming everything still lives in FindgooApp.tsx itself.
+async function readAppSource() {
+  const roots = ["../src/components", "../src/hooks"].map((root) => fileURLToPath(new URL(root, import.meta.url)));
+  const chunks = await Promise.all(
+    roots.map(async (root) => {
+      const entries = await readdir(root, { recursive: true, withFileTypes: true });
+      const files = entries.filter((entry) => entry.isFile() && [".ts", ".tsx"].includes(extname(entry.name)));
+      const contents = await Promise.all(
+        files.map((entry) => readFile(join(entry.parentPath ?? entry.path, entry.name), "utf8")),
+      );
+      return contents.join("\n");
+    }),
+  );
+  return chunks.join("\n");
+}
+
 test("builds the Findgoo app shell", async () => {
-  const [layout, page, worker] = await Promise.all([
+  const [layout, appShell, worker, appSource] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/components/FindgooApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../dist/server/index.js", import.meta.url), "utf8"),
+    readAppSource(),
   ]);
+  const page = appShell + appSource;
 
   assert.match(layout, /<html lang="ko">/i);
   assert.match(layout, /찾구 앱 베타/);
@@ -19,12 +41,14 @@ test("builds the Findgoo app shell", async () => {
 });
 
 test("keeps app trade capabilities wired", async () => {
-  const [hosting, migration, manifest, page] = await Promise.all([
+  const [hosting, migration, manifest, appShell, appSource] = await Promise.all([
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../drizzle/0000_tough_bucky.sql", import.meta.url), "utf8"),
     readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8"),
     readFile(new URL("../src/components/FindgooApp.tsx", import.meta.url), "utf8"),
+    readAppSource(),
   ]);
+  const page = appShell + appSource;
 
   assert.equal(JSON.parse(hosting).d1, "DB");
   assert.match(migration, /CREATE TABLE `profiles`/);
@@ -43,12 +67,14 @@ test("keeps app trade capabilities wired", async () => {
 });
 
 test("keeps app-first notification and navigation behavior", async () => {
-  const [page, styles, serviceWorker, personalHubMigration] = await Promise.all([
+  const [appShell, styles, serviceWorker, personalHubMigration, appSource] = await Promise.all([
     readFile(new URL("../src/components/FindgooApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/sw.js", import.meta.url), "utf8"),
     readFile(new URL("../drizzle/0001_app_personal_hub.sql", import.meta.url), "utf8"),
+    readAppSource(),
   ]);
+  const page = appShell + appSource;
 
   assert.match(page, /최근 채팅/);
   assert.match(page, /거주 및 활동 지역/);
@@ -67,7 +93,7 @@ test("keeps app-first notification and navigation behavior", async () => {
 });
 
 test("keeps the full feature specification modular and searchable", async () => {
-  const [spec, app, structure, schema, migration, uploadRoute, hosting] = await Promise.all([
+  const [spec, appShell, structure, schema, migration, uploadRoute, hosting, appSource] = await Promise.all([
     readFile(new URL("../src/constants/feature-spec.ts", import.meta.url), "utf8"),
     readFile(new URL("../src/components/FindgooApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../FINDGOO_STRUCTURE.md", import.meta.url), "utf8"),
@@ -75,7 +101,9 @@ test("keeps the full feature specification modular and searchable", async () => 
     readFile(new URL("../drizzle/0002_full_feature_framework.sql", import.meta.url), "utf8"),
     readFile(new URL("../app/api/uploads/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
+    readAppSource(),
   ]);
+  const app = appShell + appSource;
 
   for (const label of ["회원", "구매글", "판매 제안", "채팅", "거래", "급구", "찜", "검색", "알림", "고객센터", "관리자", "마이페이지"]) {
     assert.match(spec, new RegExp(`\\[${label.replace(" ", "\\s")}\\]`));
@@ -93,12 +121,14 @@ test("keeps the full feature specification modular and searchable", async () => 
 });
 
 test("offers five persistent app color themes", async () => {
-  const [themes, app, styles, structure] = await Promise.all([
+  const [themes, appShell, styles, structure, appSource] = await Promise.all([
     readFile(new URL("../src/theme/palettes.ts", import.meta.url), "utf8"),
     readFile(new URL("../src/components/FindgooApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../FINDGOO_STRUCTURE.md", import.meta.url), "utf8"),
+    readAppSource(),
   ]);
+  const app = appShell + appSource;
 
   for (const theme of ["dusk", "warm", "ocean", "forest", "berry"]) {
     assert.match(themes, new RegExp(`id: "${theme}"`));
