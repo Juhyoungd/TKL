@@ -35,7 +35,7 @@ test("builds the Findgoo app shell", async () => {
   assert.match(layout, /찾구 앱 베타/);
   assert.match(layout, /1:1 거래 채팅/);
   assert.match(layout, /manifest\.webmanifest/);
-  assert.match(page, /찾는 사람이 먼저/);
+  assert.match(page, /원하는 물건이나 도움이 필요한 일을 먼저/);
   assert.ok(worker.length > 1000);
   assert.doesNotMatch(layout + page, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });

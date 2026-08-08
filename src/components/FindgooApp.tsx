@@ -5,7 +5,6 @@ import { Toast } from "@/src/components/common/Toast";
 import { FeaturePanel } from "@/src/components/feature/FeaturePanel";
 import { HomeOverview } from "@/src/components/home/HomeOverview";
 import { MobileNav } from "@/src/components/layout/MobileNav";
-import { SiteFooter } from "@/src/components/layout/SiteFooter";
 import { SiteHeader } from "@/src/components/layout/SiteHeader";
 import { MarketSection } from "@/src/components/market/MarketSection";
 import { ChatListModal } from "@/src/components/modals/ChatListModal";
@@ -109,8 +108,6 @@ export function FindgooApp({ initialUser = null, initialView = "home" }: { initi
           onOpenFeaturePanel={(panel) => modal.setFeaturePanel(panel)}
         />
       )}
-
-      <SiteFooter onOpenTerms={() => modal.setTermsOpen(true)} onOpenSupport={() => modal.setSupportOpen(true)} />
 
       <MobileNav
         activeNav={modal.activeNav}
