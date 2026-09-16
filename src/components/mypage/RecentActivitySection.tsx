@@ -1,23 +1,22 @@
 "use client";
 
-import type { ChatMessage, Post } from "@/src/types/findgoo";
+import type { Conversation } from "@/src/types/findgoo";
 
 type RecentActivitySectionProps = {
-  chatPosts: Post[];
-  messages: ChatMessage[];
+  conversations: Conversation[];
   pendingIncomingCount: number;
-  onOpenChat: (post: Post) => void;
+  onOpenChat: (conversation: Conversation) => void;
   onOpenTrade: () => void;
 };
 
-export function RecentActivitySection({ chatPosts, messages, pendingIncomingCount, onOpenChat, onOpenTrade }: RecentActivitySectionProps) {
+export function RecentActivitySection({ conversations, pendingIncomingCount, onOpenChat, onOpenTrade }: RecentActivitySectionProps) {
   return (
     <section className="my-section">
       <div className="my-title"><div><small>ACTIVITY</small><h3>최근 채팅과 제안</h3></div><button onClick={onOpenTrade}>전체 제안 ›</button></div>
-      {chatPosts.slice(0, 2).map((post) => (
-        <button className="my-chat-row" key={post.id} onClick={() => onOpenChat(post)}>
-          <span>{post.author[0]}</span>
-          <div><strong>{post.author}</strong><small>{messages.filter((message) => message.postId === post.id).at(-1)?.text ?? post.title}</small></div>
+      {conversations.slice(0, 2).map((conversation) => (
+        <button className="my-chat-row" key={conversation.id} onClick={() => onOpenChat(conversation)}>
+          <span>{conversation.counterpartyName[0]}</span>
+          <div><strong>{conversation.counterpartyName}</strong><small>{conversation.lastMessage ?? conversation.postTitle}</small></div>
           <time>방금</time>
         </button>
       ))}

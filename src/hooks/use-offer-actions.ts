@@ -1,83 +1,66 @@
 "use client";
 
-import type { Dispatch, FormEvent, SetStateAction } from "react";
-import { uid, won } from "@/src/utils/format";
-import type { AppNotice, ChatMessage, Offer, Post } from "@/src/types/findgoo";
+import { useRouter } from "next/navigation";
+import { useAppData } from "@/src/state/AppDataProvider";
+import type { Offer, Post } from "@/src/types/findgoo";
 
-type UseOfferActionsArgs = {
-  posts: Post[];
-  offers: Offer[];
-  setOffers: Dispatch<SetStateAction<Offer[]>>;
-  setMessages: Dispatch<SetStateAction<ChatMessage[]>>;
-  selected: Post | null;
-  setSelected: Dispatch<SetStateAction<Post | null>>;
-  setTradeOpen: Dispatch<SetStateAction<boolean>>;
-  setChatPost: Dispatch<SetStateAction<Post | null>>;
-  setNickname: Dispatch<SetStateAction<string>>;
-  deliverNotice: (title: string, body: string, kind: AppNotice["kind"], postId?: string) => void;
-  flash: (message: string) => void;
-};
+// [판매 제안] 받은/보낸 제안 조회와 제안 보내기·수정·취소·수락·거절을 담당합니다.
+// 수락 시 채팅방이 열리면 바로 /chat/[id]로 이동합니다.
+export function useOfferActions() {
+  const appData = useAppData();
+  const router = useRouter();
 
-// [판매 제안] 받은/보낸 제안 목록과 제안 보내기·수정·취소·수락·거절을 담당합니다.
-export function useOfferActions({ posts, offers, setOffers, setMessages, selected, setSelected, setTradeOpen, setChatPost, setNickname, deliverNotice, flash }: UseOfferActionsArgs) {
   function postOffers(postId: string) {
-    return offers.filter((offer) => offer.postId === postId);
+    return appData.offers.filter((offer) => offer.postId === postId);
   }
 
-  function submitOffer(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!selected) return;
-    if (offers.some((offer) => offer.postId === selected.id && offer.direction === "outgoing" && offer.status === "pending")) {
-      flash("이미 보낸 제안이 있어요.");
-      return;
+  async function submitOffer(postId: string, nickname: string, price: number, message: string) {
+    if (appData.offers.some((offer) => offer.postId === postId && offer.direction === "outgoing" && offer.status === "pending")) {
+      return { error: "이미 보낸 제안이 있어요." };
     }
-    const form = new FormData(event.currentTarget);
-    const offer: Offer = { id: uid(), postId: selected.id, nickname: String(form.get("nickname")), price: Number(form.get("price")), message: String(form.get("message")), direction: "outgoing", status: "pending" };
-    setOffers((items) => [offer, ...items]);
-    setNickname(offer.nickname);
-    setSelected(null);
-    setTradeOpen(true);
-    flash("제안을 보냈어요. 상대가 선택하면 1:1 채팅이 열립니다.");
+    return appData.addOffer({ postId, nickname, price, message });
   }
 
-  // [제안 수정]
-  function editOffer(offer: Offer) {
+  async function editOffer(offer: Offer) {
     const nextPrice = Number(window.prompt("수정할 제안 가격을 입력하세요.", String(offer.price)));
-    if (!Number.isFinite(nextPrice) || nextPrice < 1000) return;
+    if (!Number.isFinite(nextPrice) || nextPrice < 1000) return { error: null };
     const nextMessage = window.prompt("수정할 제안 메시지를 입력하세요.", offer.message)?.trim();
-    if (!nextMessage) return;
-    setOffers((items) => items.map((item) => item.id === offer.id ? { ...item, price: nextPrice, message: nextMessage } : item));
-    flash("제안을 수정했어요.");
+    if (!nextMessage) return { error: null };
+    return appData.editOffer(offer.id, nextPrice, nextMessage);
   }
 
-  // [제안 거절]
-  function rejectOffer(offerId: string) {
-    setOffers((items) => items.map((item) => item.id === offerId ? { ...item, status: "rejected" } : item));
-    flash("제안을 거절했어요.");
+  async function rejectOffer(offerId: string) {
+    return appData.updateOfferStatus(offerId, "rejected");
   }
 
-  function acceptOffer(offer: Offer) {
-    const post = posts.find((item) => item.id === offer.postId);
-    if (!post) return;
-    setOffers((items) => items.map((item) => item.id === offer.id ? { ...item, status: "accepted" } : item));
-    setMessages((items) => items.some((item) => item.postId === post.id) ? items : [
-      ...items,
-      { id: uid(), postId: post.id, sender: "partner", text: `${won(offer.price)} 제안을 선택해 주셔서 감사합니다. 거래 시간과 장소를 정해볼까요?`, time: "방금" },
-    ]);
-    setTradeOpen(false);
-    setChatPost(post);
-    setSelected(null);
-    deliverNotice("거래 요청을 수락했어요", `${offer.nickname}님과 1:1 거래 채팅이 열렸습니다.`, "trade", post.id);
-    flash("거래가 성사되어 1:1 채팅방을 열었어요.");
+  async function acceptOffer(offer: Offer) {
+    const { conversation, error } = await appData.acceptOfferAndOpenChat(offer);
+    if (!error && conversation) router.push(`/chat/${conversation.id}`);
+    return { error };
   }
 
-  function cancelOffer(offerId: string) {
-    setOffers((items) => items.map((item) => item.id === offerId ? { ...item, status: "canceled" } : item));
-    flash("제안을 취소했어요.");
+  async function cancelOffer(offerId: string) {
+    return appData.updateOfferStatus(offerId, "canceled");
   }
 
-  const incomingOffers = offers.filter((offer) => offer.direction === "incoming" && offer.status !== "canceled" && offer.status !== "rejected");
-  const outgoingOffers = offers.filter((offer) => offer.direction === "outgoing" && offer.status !== "canceled");
+  // 이미 수락된 제안에서 그 대화방으로 이동합니다.
+  function goToOfferChat(offer: Offer) {
+    const conversation = appData.conversations.find((item) => {
+      if (item.postId !== offer.postId) return false;
+      return offer.direction === "incoming" ? item.counterpartyId === offer.offererId : true;
+    });
+    if (conversation) router.push(`/chat/${conversation.id}`);
+  }
+
+  // 내(구매자)가 보낸 제안이 수락된 글에서 대화방을 찾아 이동합니다(없으면 새로 만듭니다).
+  async function openChatForPost(post: Post) {
+    const { conversation, error } = await appData.startOrGetConversation(post);
+    if (!error && conversation) router.push(`/chat/${conversation.id}`);
+    return { error };
+  }
+
+  const incomingOffers = appData.offers.filter((offer) => offer.direction === "incoming" && offer.status !== "canceled" && offer.status !== "rejected");
+  const outgoingOffers = appData.offers.filter((offer) => offer.direction === "outgoing" && offer.status !== "canceled");
   const pendingIncomingCount = incomingOffers.filter((offer) => offer.status === "pending").length;
 
   return {
@@ -90,5 +73,7 @@ export function useOfferActions({ posts, offers, setOffers, setMessages, selecte
     rejectOffer,
     acceptOffer,
     cancelOffer,
+    goToOfferChat,
+    openChatForPost,
   };
 }

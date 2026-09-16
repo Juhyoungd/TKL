@@ -1,8 +1,6 @@
-import { FindgooScreen } from "@/src/components/screens/FindgooScreen";
-
-export const dynamic = "force-dynamic";
+import { MarketSection } from "@/src/components/market/MarketSection";
 
 // [구매글]
 export default function BuyPage() {
-  return <FindgooScreen initialView="buy" />;
+  return <MarketSection type="buy" />;
 }

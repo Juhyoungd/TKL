@@ -1,19 +1,28 @@
-import { uploadFindgooImage } from "@/src/api/findgoo-client";
-import type { Viewer } from "@/src/types/findgoo";
+import { supabase } from "@/src/lib/supabase/client";
 
-type UploadPurpose = "profile" | "chat";
+// [이미지 전송] Supabase Storage에 직접 업로드합니다(findgoo-app 모바일의 mediaService와 같은 버킷).
+function safeExtension(file: File) {
+  const candidate = file.name.split(".").pop()?.toLowerCase();
+  if (candidate && /^[a-z0-9]{2,5}$/.test(candidate)) return candidate;
+  return file.type === "image/png" ? "png" : "jpg";
+}
 
-// [이미지 전송]
-// 정식 회원은 서버 업로드를, 비회원 체험(guest-device)은 기기 안에서만 보이는
-// data URL로 대체해 별도 로그인 없이도 사진 기능을 체험할 수 있게 합니다.
-export async function resolveImageSource(file: File, purpose: UploadPurpose, viewer: Viewer) {
-  if (viewer && viewer.userId !== "guest-device") {
-    return uploadFindgooImage(file, purpose);
-  }
-  return await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result ?? ""));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+export async function uploadAvatar(file: File, userId: string) {
+  const path = `${userId}/avatar-${Date.now()}.${safeExtension(file)}`;
+  const { error } = await supabase.storage.from("avatars").upload(path, file, { contentType: file.type || "image/jpeg", upsert: true });
+  if (error) return { url: null, error: error.message };
+  return { url: supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl, error: null };
+}
+
+export async function uploadChatImage(file: File, conversationId: string, userId: string) {
+  const path = `${conversationId}/${userId}-${Date.now()}.${safeExtension(file)}`;
+  const { error } = await supabase.storage.from("chat-media").upload(path, file, { contentType: file.type || "image/jpeg", upsert: false });
+  if (error) return { path: null, url: null, error: error.message };
+  const { data, error: signedError } = await supabase.storage.from("chat-media").createSignedUrl(path, 60 * 60 * 24);
+  return { path, url: data?.signedUrl ?? null, error: signedError?.message ?? null };
+}
+
+export async function signChatImage(path: string) {
+  const { data, error } = await supabase.storage.from("chat-media").createSignedUrl(path, 60 * 60 * 24);
+  return { url: data?.signedUrl ?? null, error: error?.message ?? null };
 }

@@ -1,28 +1,26 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { appIcons } from "@/src/assets/app-icons";
-import type { BottomNavKey } from "@/src/types/findgoo";
 
 type MobileNavProps = {
-  activeNav: BottomNavKey;
-  onHome: () => void;
-  onUrgent: () => void;
-  onCreate: () => void;
-  onChat: () => void;
-  onMy: () => void;
   chatBadge: number;
   myBadge: number;
 };
 
-// [하단 메뉴]
-export function MobileNav({ activeNav, onHome, onUrgent, onCreate, onChat, onMy, chatBadge, myBadge }: MobileNavProps) {
+// [하단 메뉴] 모바일 화면(≤760px)에서만 보이는 보조 내비게이션. 현재 경로로 활성 탭을 표시합니다.
+export function MobileNav({ chatBadge, myBadge }: MobileNavProps) {
+  const pathname = usePathname();
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+
   return (
     <nav className="mobile-nav" aria-label="주요 메뉴">
-      <button className={activeNav === "home" ? "active" : ""} aria-current={activeNav === "home" ? "page" : undefined} onClick={onHome}><span>{appIcons.home}</span>홈</button>
-      <button className={activeNav === "urgent" ? "active" : ""} aria-current={activeNav === "urgent" ? "page" : undefined} onClick={onUrgent}><span>{appIcons.urgent}</span>급구</button>
-      <button className={`write ${activeNav === "create" ? "active" : ""}`} aria-current={activeNav === "create" ? "page" : undefined} onClick={onCreate}><span>{appIcons.create}</span>등록</button>
-      <button className={activeNav === "chat" ? "active" : ""} aria-current={activeNav === "chat" ? "page" : undefined} onClick={onChat}><span>{appIcons.chat}</span>채팅{chatBadge > 0 && <b className="nav-badge">{chatBadge}</b>}</button>
-      <button className={activeNav === "my" ? "active" : ""} aria-current={activeNav === "my" ? "page" : undefined} onClick={onMy}><span>{appIcons.profile}</span>마이{myBadge > 0 && <b className="nav-badge">{myBadge}</b>}</button>
+      <Link href="/" className={isActive("/") && pathname === "/" ? "active" : ""} aria-current={pathname === "/" ? "page" : undefined}><span>{appIcons.home}</span>홈</Link>
+      <Link href="/urgent" className={isActive("/urgent") ? "active" : ""} aria-current={isActive("/urgent") ? "page" : undefined}><span>{appIcons.urgent}</span>급구</Link>
+      <Link href="/post/new" className={`write ${isActive("/post/new") ? "active" : ""}`} aria-current={isActive("/post/new") ? "page" : undefined}><span>{appIcons.create}</span>등록</Link>
+      <Link href="/chat" className={isActive("/chat") ? "active" : ""} aria-current={isActive("/chat") ? "page" : undefined}><span>{appIcons.chat}</span>채팅{chatBadge > 0 && <b className="nav-badge">{chatBadge}</b>}</Link>
+      <Link href="/profile" className={isActive("/profile") ? "active" : ""} aria-current={isActive("/profile") ? "page" : undefined}><span>{appIcons.profile}</span>마이{myBadge > 0 && <b className="nav-badge">{myBadge}</b>}</Link>
     </nav>
   );
 }
