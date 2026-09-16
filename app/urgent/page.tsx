@@ -1,8 +1,6 @@
-import { FindgooScreen } from "@/src/components/screens/FindgooScreen";
-
-export const dynamic = "force-dynamic";
+import { MarketSection } from "@/src/components/market/MarketSection";
 
 // [급구]
 export default function UrgentPage() {
-  return <FindgooScreen initialView="urgent" />;
+  return <MarketSection type="urgent" />;
 }

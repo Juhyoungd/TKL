@@ -6,13 +6,12 @@ import type { Post } from "@/src/types/findgoo";
 type PostCardProps = {
   post: Post;
   saved: boolean;
-  totalOfferCount: number;
   onOpen: (post: Post) => void;
   onToggleSaved: (post: Post) => void;
 };
 
 // [구매글] + [급구] 목록에 나오는 카드 한 장
-export function PostCard({ post, saved, totalOfferCount, onOpen, onToggleSaved }: PostCardProps) {
+export function PostCard({ post, saved, onOpen, onToggleSaved }: PostCardProps) {
   return (
     <article className={`post-card ${post.type} status-${post.status}`} onClick={() => onOpen(post)}>
       <div className="post-head">
@@ -28,7 +27,7 @@ export function PostCard({ post, saved, totalOfferCount, onOpen, onToggleSaved }
       <div className="post-info"><span>⌖ {post.region}</span><span>·</span><span>{post.created}</span>{post.deadline && <span className="deadline">{post.deadline}</span>}</div>
       <div className="post-bottom">
         <div><small>{post.type === "buy" ? "희망 가격" : "지원 금액"}</small><strong>{won(post.price)}</strong></div>
-        <div className="offer-bubble"><b>{totalOfferCount}</b><span>{post.type === "buy" ? "개의 제안" : "명 지원"}</span><i>→</i></div>
+        <div className="offer-bubble"><b>{post.offerCount}</b><span>{post.type === "buy" ? "개의 제안" : "명 지원"}</span><i>→</i></div>
       </div>
     </article>
   );

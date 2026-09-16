@@ -1,17 +1,9 @@
-// [기기 저장] 공개 베타의 임시 상태만 담당합니다. 정식 회원 데이터는 API/D1이 기준입니다.
+// [기기 저장] Supabase에 대응 테이블이 없는 코스메틱 설정만 담당합니다.
 export const storageKeys = {
-  posts: "findgoo-app-posts-v2",
-  offers: "findgoo-app-offers-v2",
-  chats: "findgoo-app-chats-v2",
-  notices: "findgoo-app-notices-v2",
-  saved: "findgoo-app-saved-v2",
   regions: "findgoo-app-activity-regions",
   categories: "findgoo-app-interest-categories",
   keywords: "findgoo-app-keywords",
-  profileImage: "findgoo-app-profile-image",
   push: "findgoo-app-push",
-  region: "findgoo-app-region",
-  nickname: "findgoo-app-nickname",
   theme: "findgoo-color-theme",
 } as const;
 

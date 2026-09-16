@@ -1,11 +1,10 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
 import { regions } from "@/src/constants/feature-spec";
 
 type RegionSectionProps = {
   region: string;
-  setRegion: Dispatch<SetStateAction<string>>;
+  setRegion: (region: string) => void;
   activityRegions: string[];
   onToggleRegion: (region: string) => void;
 };

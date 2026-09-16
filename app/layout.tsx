@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { AppShell } from "@/src/components/AppShell";
+import { Providers } from "@/src/components/Providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "찾구 앱 베타 — 제안이 성사되면 열리는 1:1 거래 채팅",
+  title: "찾구 — 제안이 성사되면 열리는 1:1 거래 채팅",
   description: "구매글과 급구를 둘러보고 조건을 제안하세요. 거래가 성사되면 두 사람만의 채팅방이 열립니다.",
   applicationName: "찾구",
   manifest: "/manifest.webmanifest",
@@ -25,5 +27,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ko"><body>{children}</body></html>;
+  return <html lang="ko"><body><Providers><AppShell>{children}</AppShell></Providers></body></html>;
 }

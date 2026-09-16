@@ -1,20 +1,21 @@
 "use client";
 
 import type { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
-import { resolveImageSource } from "@/src/services/image-upload";
-import type { Viewer } from "@/src/types/findgoo";
+import { useAuth } from "@/src/state/AuthProvider";
+import { uploadAvatar } from "@/src/services/image-upload";
 
 type UseProfileSettingsArgs = {
   keywords: string[];
   setKeywords: Dispatch<SetStateAction<string[]>>;
-  setProfileImage: Dispatch<SetStateAction<string>>;
-  setSettingsOpen: Dispatch<SetStateAction<boolean>>;
-  viewer: Viewer;
+  nicknameDraft: string;
+  setNicknameDraft: Dispatch<SetStateAction<string>>;
   flash: (message: string) => void;
 };
 
-// [마이페이지] 프로필 사진, 관심 지역/카테고리 선택, 키워드 알림 등록/저장을 담당합니다.
-export function useProfileSettings({ keywords, setKeywords, setProfileImage, setSettingsOpen, viewer, flash }: UseProfileSettingsArgs) {
+// [마이페이지] 프로필 사진, 관심 지역/카테고리 선택, 키워드 알림 등록/닉네임 저장을 담당합니다.
+export function useProfileSettings({ keywords, setKeywords, nicknameDraft, setNicknameDraft, flash }: UseProfileSettingsArgs) {
+  const { session, updateProfile } = useAuth();
+
   function toggleChoice(value: string, values: string[], update: (items: string[]) => void, limit = 5) {
     if (values.includes(value)) update(values.filter((item) => item !== value));
     else if (values.length < limit) update([...values, value]);
@@ -30,21 +31,27 @@ export function useProfileSettings({ keywords, setKeywords, setProfileImage, set
     if (keywords.length >= 8) { flash("키워드는 최대 8개까지 등록할 수 있어요."); return; }
     setKeywords((items) => [keyword, ...items]);
     event.currentTarget.reset();
-    flash(`‘${keyword}’ 알림을 등록했어요.`);
+    flash(`'${keyword}' 알림을 등록했어요.`);
   }
 
+  // [사진 변경] 고르는 즉시 업로드하고 프로필에 반영합니다.
   async function changeProfileImage(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    if (!file) return;
+    event.target.value = "";
+    if (!file || !session) return;
     if (!file.type.startsWith("image/") || file.size > 1_500_000) { flash("1.5MB 이하 이미지 파일을 선택해 주세요."); return; }
-    try { setProfileImage(await resolveImageSource(file, "profile", viewer)); }
-    catch { flash("프로필 사진을 저장하지 못했어요."); }
+    const { url, error } = await uploadAvatar(file, session.user.id);
+    if (error || !url) { flash("프로필 사진을 저장하지 못했어요."); return; }
+    const result = await updateProfile({ avatarUrl: url });
+    if (result.error) flash("프로필 사진을 저장하지 못했어요.");
+    else flash("프로필 사진을 변경했어요.");
   }
 
-  function saveSettings() {
-    setSettingsOpen(false);
+  async function saveSettings() {
+    const result = await updateProfile({ nickname: nicknameDraft });
+    if (result.error) { flash("설정을 저장하지 못했어요."); return; }
     flash("마이페이지 설정을 저장했어요.");
   }
 
-  return { toggleChoice, addKeyword, changeProfileImage, saveSettings };
+  return { toggleChoice, addKeyword, changeProfileImage, saveSettings, nicknameDraft, setNicknameDraft };
 }
